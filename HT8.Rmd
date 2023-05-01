@@ -1,0 +1,86 @@
+---
+title: "Hoja de Trabajo 8"
+author: "Pablo Quintana, Sofia Escobar, Wilfredo Gallegos"
+date: "2023-04-28"
+output: html_document
+---
+
+# 1 y 2
+```{r, echo=FALSE}
+library(caret)
+library(nnet)
+library(dummy)
+library(neuralnet)
+
+
+porcentaje<-0.7
+datos <- read.csv("C:/Users/pablo/Downloads/train.csv")
+
+#Quitando na
+datos[is.na(datos)] <- 0
+datos$Id <- NULL
+
+
+#Se agrega la variable clasificacion
+datos$clasificacion <- ifelse(datos$SalePrice > 290000, 1, ifelse(datos$SalePrice>170000, 2, 3))
+datos$clasificacion <- as.factor(datos$clasificacion)
+
+datos <- datos[,c(4,12,17,34,38,46,62,67,81)]
+
+set.seed(123)
+corte <- sample(nrow(datos),nrow(datos)*porcentaje)
+train<-datos[corte,]
+test<-datos[-corte,]
+```
+
+
+# Hacer dos redes neuronales diferentes y predicciones
+
+```{r, echo=FALSE}
+#Modelo 47
+Rprof(memory.profiling = TRUE)
+modelo.nn1 <- nnet(clasificacion~.,data = train, size=2, rang=0.1, decay=5e-4, maxit=200) 
+Rprof(NULL)
+l1<-summaryRprof(memory = "both")
+
+prediccion1 <- as.data.frame(predict(modelo.nn1, newdata = test[,1:8]))
+columnaMasAlta<-apply(prediccion1, 1, function(x) colnames(prediccion1)[which.max(x)])
+test$prediccion1<-columnaMasAlta
+
+cfm1 <-confusionMatrix(as.factor(test$prediccion1),test$clasificacion)
+
+test$prediccion1 <- NULL
+
+#Modelo 2
+Rprof(memory.profiling = TRUE)
+modelo.nn2 <- nnet(clasificacion~.,data = train, size=20, rang=0.5, decay=2e-4, maxit=10) 
+Rprof(NULL)
+l2<-summaryRprof(memory = "both")
+
+prediccion2 <- as.data.frame(predict(modelo.nn2, newdata = test[,1:8]))
+columnaMasAlta<-apply(prediccion2, 1, function(x) colnames(prediccion2)[which.max(x)])
+test$prediccion2<-columnaMasAlta
+
+cfm2 <-confusionMatrix(as.factor(test$prediccion2),test$clasificacion)
+
+
+```
+## Mostrar matriz de confusion modelo 1
+```{r, echo = FALSE}
+cfm1
+```
+
+## Mostrar matriz de confusion modelo 2
+```{r, echo = FALSE}
+cfm2
+```
+
+## Mostrar rendimiento modelo 1
+```{r, echo=FALSE}
+l1
+```
+
+## Mostrar rendimiento modelo 2
+```{r, echo=FALSE}
+l2
+```
