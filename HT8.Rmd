@@ -5,7 +5,7 @@ date: "2023-04-28"
 output: html_document
 ---
 
-# 1 y 2
+# Pregunta 1 y 2
 ```{r, echo=FALSE}
 library(caret)
 library(nnet)
@@ -14,7 +14,7 @@ library(neuralnet)
 
 
 porcentaje<-0.7
-datos <- read.csv("C:/Users/pablo/Downloads/train.csv")
+datos <- read.csv("train.csv")
 
 #Quitando na
 datos[is.na(datos)] <- 0
@@ -22,10 +22,10 @@ datos$Id <- NULL
 
 
 #Se agrega la variable clasificacion
-datos$clasificacion <- ifelse(datos$SalePrice > 290000, 1, ifelse(datos$SalePrice>170000, 2, 3))
+datos$clasificacion <- ifelse(datos$SalePrice > 290000, "Caras", ifelse(datos$SalePrice>170000, "Intermedia", "Economica"))
 datos$clasificacion <- as.factor(datos$clasificacion)
 
-datos <- datos[,c(4,12,17,34,38,46,62,67,81)]
+datos <- datos[,c(4,12,17,34,38,46,62,67,80,81)]
 
 set.seed(123)
 corte <- sample(nrow(datos),nrow(datos)*porcentaje)
@@ -34,7 +34,7 @@ test<-datos[-corte,]
 ```
 
 
-# Hacer dos redes neuronales diferentes y predicciones
+#Pregunta 3 y 4: Hacer dos redes neuronales diferentes y predicciones
 
 ```{r, echo=FALSE}
 #Modelo 47
@@ -43,7 +43,7 @@ modelo.nn1 <- nnet(clasificacion~.,data = train, size=2, rang=0.1, decay=5e-4, m
 Rprof(NULL)
 l1<-summaryRprof(memory = "both")
 
-prediccion1 <- as.data.frame(predict(modelo.nn1, newdata = test[,1:8]))
+prediccion1 <- as.data.frame(predict(modelo.nn1, newdata = test[,1:9]))
 columnaMasAlta<-apply(prediccion1, 1, function(x) colnames(prediccion1)[which.max(x)])
 test$prediccion1<-columnaMasAlta
 
@@ -57,7 +57,7 @@ modelo.nn2 <- nnet(clasificacion~.,data = train, size=20, rang=0.5, decay=2e-4, 
 Rprof(NULL)
 l2<-summaryRprof(memory = "both")
 
-prediccion2 <- as.data.frame(predict(modelo.nn2, newdata = test[,1:8]))
+prediccion2 <- as.data.frame(predict(modelo.nn2, newdata = test[,1:9]))
 columnaMasAlta<-apply(prediccion2, 1, function(x) colnames(prediccion2)[which.max(x)])
 test$prediccion2<-columnaMasAlta
 
@@ -65,6 +65,9 @@ cfm2 <-confusionMatrix(as.factor(test$prediccion2),test$clasificacion)
 
 
 ```
+
+##Pregunta 5: Matrices de confusión
+
 ## Mostrar matriz de confusion modelo 1
 ```{r, echo = FALSE}
 cfm1
@@ -75,12 +78,97 @@ cfm1
 cfm2
 ```
 
+##Pregunta 6: Efectividad y rendimiento de los modelos
+
 ## Mostrar rendimiento modelo 1
 ```{r, echo=FALSE}
-l1
+print("Tiempo de entrenamiento modelo 1: ")
+l1$sampling.time
 ```
 
 ## Mostrar rendimiento modelo 2
 ```{r, echo=FALSE}
-l2
+print("Tiempo de entrenamiento modelo 2: ")
+l2$sampling.time
 ```
+
+##Pregunta 7: Sobreajuste en el modelo
+```{r}
+
+```
+
+##Pregunta 8: Tuneo de parametros
+```{r}
+
+```
+
+##Pregunta 9 y 10: Modelos de regresión con la variable SalePrice
+```{r, echo=FALSE}
+#Modelo 1
+Rprof(memory.profiling = TRUE)
+modelo.nn3 <- nnet(SalePrice~.,data = train, size=2, rang=0.1, decay=5e-4, maxit=200) 
+Rprof(NULL)
+l3<-summaryRprof(memory = "both")
+
+test$prediccion3<-predict(modelo.nn3, newdata = test)
+
+mean((test$prediccion3 - test$SalePrice))
+
+plot(test$SalePrice, test$prediccion3,
+     main="Neural network predictions vs actual",
+     xlab="Actual")
+test$prediccion3<-NULL
+
+```
+
+```{r, echo=FALSE}
+#Modelo 2
+Rprof(memory.profiling = TRUE)
+modelo.nn4 <- nnet(SalePrice~.,data = train, size=20, rang=0.5, decay=2e-4, maxit=10) 
+Rprof(NULL)
+l4<-summaryRprof(memory = "both")
+
+test$prediccion4<-predict(modelo.nn4, newdata = test)
+
+mean((test$prediccion4 - test$SalePrice))
+
+plot(test$SalePrice, test$prediccion3,
+     main="Neural network predictions vs actual",
+     xlab="Actual")
+
+test$prediccion4<-NULL
+
+```
+
+##Pregunta 11: Comparación de ambos modelos de regresión
+
+##Pregunta 12: Sobreajuste en los modelos de regresión
+```{r}
+
+```
+
+##Pregunta 13: Tuneo de parametros en los modelos de regresión
+```{r}
+
+```
+
+##Pregunta 14: ¿Qué modelo se demoro más?
+
+## Mostrar rendimiento modelo 1
+```{r, echo=FALSE}
+print("Tiempo de entrenamiento modelo de regresión 1: ")
+l3$sampling.time
+```
+
+## Mostrar rendimiento modelo 2
+```{r, echo=FALSE}
+print("Tiempo de entrenamiento modelo de regresión 2: ")
+l4$sampling.time
+```
+
+##Pregunta 15: Mejor modelo para clasificar (comparación con otras hojas)
+
+
+##Pregunta 16: Mejor modelo para predecir (comparación con otras hojas)
+
+##Pregunta 17: Conclusión general 
