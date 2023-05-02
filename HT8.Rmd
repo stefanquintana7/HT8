@@ -11,7 +11,7 @@ library(caret)
 library(nnet)
 library(dummy)
 library(neuralnet)
-
+library(Metrics)
 
 porcentaje<-0.7
 datos <- read.csv("train.csv")
@@ -22,7 +22,7 @@ datos$Id <- NULL
 
 
 #Se agrega la variable clasificacion
-datos$clasificacion <- ifelse(datos$SalePrice > 290000, "Caras", ifelse(datos$SalePrice>170000, "Intermedia", "Economica"))
+datos$clasificacion <- ifelse(datos$SalePrice > 290000, 1, ifelse(datos$SalePrice>170000, 2, 3))
 datos$clasificacion <- as.factor(datos$clasificacion)
 
 datos <- datos[,c(4,12,17,34,38,46,62,67,80,81)]
@@ -47,9 +47,9 @@ prediccion1 <- as.data.frame(predict(modelo.nn1, newdata = test[,1:9]))
 columnaMasAlta<-apply(prediccion1, 1, function(x) colnames(prediccion1)[which.max(x)])
 test$prediccion1<-columnaMasAlta
 
-cfm1 <-confusionMatrix(as.factor(test$prediccion1),test$clasificacion)
+cfm1 <-confusionMatrix(as.factor(test$prediccion1),as.factor(test$clasificacion))
 
-test$prediccion1 <- NULL
+test$prediccion1<-NULL
 
 #Modelo 2
 Rprof(memory.profiling = TRUE)
@@ -63,6 +63,7 @@ test$prediccion2<-columnaMasAlta
 
 cfm2 <-confusionMatrix(as.factor(test$prediccion2),test$clasificacion)
 
+test$prediccion2<-NULL
 
 ```
 
@@ -80,20 +81,24 @@ cfm2
 
 ##Pregunta 6: Efectividad y rendimiento de los modelos
 
-## Mostrar rendimiento modelo 1
 ```{r, echo=FALSE}
+## Mostrar rendimiento modelo 1
 print("Tiempo de entrenamiento modelo 1: ")
 l1$sampling.time
-```
 
 ## Mostrar rendimiento modelo 2
-```{r, echo=FALSE}
 print("Tiempo de entrenamiento modelo 2: ")
 l2$sampling.time
 ```
+Observamos que la efectividad de ambos modelos es bastante baja, incluso si la comparamos con modelos de otras hojas, hasta el momento es el modelo con menos tiempo de entrenamiento. 
 
 ##Pregunta 7: Sobreajuste en el modelo
 ```{r}
+#modelo 1
+rmse(is.numeric(test$clasificacion), is.numeric(prediccion1))
+
+#modelo 2
+rmse(is.numeric(test$clasificacion), is.numeric(prediccion2))
 
 ```
 
@@ -111,7 +116,7 @@ Rprof(NULL)
 l3<-summaryRprof(memory = "both")
 
 test$prediccion3<-predict(modelo.nn3, newdata = test)
-
+prediccion3 <- as.data.frame(predict(modelo.nn3, newdata = test))
 mean((test$prediccion3 - test$SalePrice))
 
 plot(test$SalePrice, test$prediccion3,
@@ -129,7 +134,7 @@ Rprof(NULL)
 l4<-summaryRprof(memory = "both")
 
 test$prediccion4<-predict(modelo.nn4, newdata = test)
-
+prediccion4 <- as.data.frame(predict(modelo.nn4, newdata = test))
 mean((test$prediccion4 - test$SalePrice))
 
 plot(test$SalePrice, test$prediccion3,
@@ -142,33 +147,44 @@ test$prediccion4<-NULL
 
 ##Pregunta 11: Comparación de ambos modelos de regresión
 
+Para las regresiones el segundo modelo presentó un R2 más cercano a 1, es decir, que estos datos se acercaban más a los resultados esperados. Por otro lado, analizando las gráficas de residuos se determinó que para ambos modelos tienen una distribución normal, esto quiere decir que los errores de regresión son aleatorios. Además, se observa que la media de residuos en ambos modelos se encuentra cercana a 0.
+
 ##Pregunta 12: Sobreajuste en los modelos de regresión
 ```{r}
+#modelo 1
+rmse(is.numeric(test$SalePrice), is.numeric(prediccion3))
+
+#modelo 2
+rmse(is.numeric(test$SalePrice), is.numeric(prediccion4))
 
 ```
+Podemos notar que para el conjunto de entrenamiento y el test el valor RMSE se aleja de 0, por lo tanto se asume que no existen problemas de overfitting.
 
 ##Pregunta 13: Tuneo de parametros en los modelos de regresión
 ```{r}
 
 ```
 
-##Pregunta 14: ¿Qué modelo se demoro más?
+##Pregunta 14: Comparación de tiempo y predicción
 
-## Mostrar rendimiento modelo 1
 ```{r, echo=FALSE}
+#modelo 1
 print("Tiempo de entrenamiento modelo de regresión 1: ")
 l3$sampling.time
-```
 
-## Mostrar rendimiento modelo 2
-```{r, echo=FALSE}
+#modelo 2
 print("Tiempo de entrenamiento modelo de regresión 2: ")
 l4$sampling.time
 ```
+De acuerdo con las gráficas de residuos, que nos indican que ambos modelos tienen una distribución normal, la diferencia entre los R2 y el tiempo de entrenamiento no se logra determinar una diferencia significativa entre la calidad de ambos modelos. Por lo tanto, se recomienda explorar distintas topologías y otros solvers para determinar el modelo de regresión óptimo.
 
 ##Pregunta 15: Mejor modelo para clasificar (comparación con otras hojas)
 
+Al observar los resultados se puede observar que otros modelos obtuvieron mejores resultados. Esto puede ser debido a que la cantidad de variables y neuronas que utilizamos para este modelo. En cuanto tiempo de ejecución se puede notar una gran diferencia entre los resultados y gran salto a comparación de de los otros algoritmos. Esto pudo haber sido por la cantidad de neuronas ya que cada una necesita obtener resultados de las capas.
+
 
 ##Pregunta 16: Mejor modelo para predecir (comparación con otras hojas)
+
+A comparación de otros modelos este tiene un tiempo de predicción bastante bajo, ninguno sobrepasa los 0.05 lo cuál es positivo y da una ventaja frente a los otros algoritmos.
 
 ##Pregunta 17: Conclusión general 
