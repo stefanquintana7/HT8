@@ -48,6 +48,8 @@ columnaMasAlta<-apply(prediccion1, 1, function(x) colnames(prediccion1)[which.ma
 test$prediccion1<-columnaMasAlta
 
 cfm1 <-confusionMatrix(as.factor(test$prediccion1),as.factor(test$clasificacion))
+test2 <-test
+
 
 test$prediccion1<-NULL
 
@@ -62,7 +64,7 @@ columnaMasAlta<-apply(prediccion2, 1, function(x) colnames(prediccion2)[which.ma
 test$prediccion2<-columnaMasAlta
 
 cfm2 <-confusionMatrix(as.factor(test$prediccion2),test$clasificacion)
-
+test3 <-test
 test$prediccion2<-NULL
 
 ```
@@ -94,10 +96,20 @@ l2$sampling.time
 ```
 Observamos que la efectividad de ambos modelos es bastante baja, incluso si la comparamos con modelos de otras hojas, hasta el momento es el modelo con menos tiempo de entrenamiento. 
 
-##Pregunta 7: Sobreajuste en el modelo
+## Pregunta 7: Sobreajuste en el modelo
+### precision del modelo 1
+
 ```{r}
+accuracy(test2$prediccion1, test$clasificacion)
+```
+Podemos observar que el modelo en general tiene una precision de 0.52, individualmente obtenemos que la presiciones son de 0.5, 0.504 y 0.49 para las clases caras, economica e intermedia respectivamente. Realmente podemos observar que existe bastante sobre ajuste, ya que el modelo propuesto no se ajusta suficientemente bien con los datos de entrenamineto y solo tiene un 50% de acertividad en la predicción.
+
+
+```{r}
+accuracy(test3$prediccion2, test$clasificacion)
 
 ```
+De igual manera se obtienen exactamente los mismos resultados para el modelo 2 propuesto, lo cual nos indica que de todas maneras existe sobreajuste del modelo. Descartamos la posibilidad que esto sea debido a correlación entre variables ya que se ha analizado con anterioridad la correlacion entre todas las variables a utilizar. Esto puede suceder debido a que se esta tomando muy pocas variables en el modelo o estamos tomando algunas variables que no tienen representación y su significancia en el modelo altera la predicción.
 
 ##Pregunta 8: Tuneo de parametros
 ```{r}

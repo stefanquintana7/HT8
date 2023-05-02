@@ -1,0 +1,7 @@
+memory profiling: sample.interval=20000
+:2493384:3925075:161011536:6:
+:2497931:4442888:161681352:409:".C" "nnet.default" "nnet.formula" "nnet" 
+:2497931:4442888:161681352:0:".C" "nnet.default" "nnet.formula" "nnet" 
+:2497931:4442888:161681352:0:".C" "nnet.default" "nnet.formula" "nnet" 
+:2499379:4499316:161841736:112:"structure" "object.size" ".rs.describeObject" 
+:2513039:4501008:164017280:785:"format.default" "format" "format.fun" "paste" "nchar.w" "maybe_truncate" "formObj" "cat" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "...elt" "withVisible" "capture.output" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.withTimeLimit" ".rs.valueFromStr" ".rs.valueContentsImpl" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.valueContents" ".rs.describeObject" 
