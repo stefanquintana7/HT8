@@ -22,7 +22,7 @@ datos$Id <- NULL
 
 
 #Se agrega la variable clasificacion
-datos$clasificacion <- ifelse(datos$SalePrice > 290000, 1, ifelse(datos$SalePrice>170000, 2, 3))
+datos$clasificacion <- ifelse(datos$SalePrice > 290000, "Caras", ifelse(datos$SalePrice>170000, "Intermedia", "Economica"))
 datos$clasificacion <- as.factor(datos$clasificacion)
 
 datos <- datos[,c(4,12,17,34,38,46,62,67,80,81)]
@@ -81,12 +81,14 @@ cfm2
 
 ##Pregunta 6: Efectividad y rendimiento de los modelos
 
-```{r, echo=FALSE}
 ## Mostrar rendimiento modelo 1
+```{r, echo=FALSE}
 print("Tiempo de entrenamiento modelo 1: ")
 l1$sampling.time
+```
 
 ## Mostrar rendimiento modelo 2
+```{r, echo=FALSE}
 print("Tiempo de entrenamiento modelo 2: ")
 l2$sampling.time
 ```
@@ -94,11 +96,6 @@ Observamos que la efectividad de ambos modelos es bastante baja, incluso si la c
 
 ##Pregunta 7: Sobreajuste en el modelo
 ```{r}
-#modelo 1
-rmse(is.numeric(test$clasificacion), is.numeric(prediccion1))
-
-#modelo 2
-rmse(is.numeric(test$clasificacion), is.numeric(prediccion2))
 
 ```
 
@@ -158,7 +155,6 @@ rmse(is.numeric(test$SalePrice), is.numeric(prediccion3))
 rmse(is.numeric(test$SalePrice), is.numeric(prediccion4))
 
 ```
-Podemos notar que para el conjunto de entrenamiento y el test el valor RMSE se aleja de 0, por lo tanto se asume que no existen problemas de overfitting.
 
 ##Pregunta 13: Tuneo de parametros en los modelos de regresión
 ```{r}
