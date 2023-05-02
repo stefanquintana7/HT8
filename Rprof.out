@@ -1,6 +1,0 @@
-memory profiling: sample.interval=20000
-:4473812:12484277:325131856:415:".C" "nnet.default" "nnet.formula" "nnet" 
-:4473812:12484277:325131856:0:".C" "nnet.default" "nnet.formula" "nnet" 
-:4473812:12484277:325131856:0:".C" "nnet.default" "nnet.formula" "nnet" 
-:4473812:12484277:325131856:0:".C" "nnet.default" "nnet.formula" "nnet" 
-:4504908:12546196:329812336:1805:"str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "...elt" "withVisible" "capture.output" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.withTimeLimit" ".rs.valueFromStr" ".rs.valueContentsImpl" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.valueContents" ".rs.describeObject" 
