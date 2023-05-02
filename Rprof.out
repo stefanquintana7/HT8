@@ -1,4 +1,6 @@
 memory profiling: sample.interval=20000
-:2884493:7234955:222244736:375:".External2" "model.matrix.default" "model.matrix" "nnet.formula" "nnet" 
-:2486227:4695089:154496048:306:"...elt" "stopifnot" "modifyList" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "...elt" "withVisible" "capture.output" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.withTimeLimit" ".rs.valueFromStr" ".rs.valueContentsImpl" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.valueContents" ".rs.describeObject" 
-:2516998:4700814:159130384:1714:"stopifnot" "modifyList" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "...elt" "withVisible" "capture.output" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.withTimeLimit" ".rs.valueFromStr" ".rs.valueContentsImpl" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.valueContents" ".rs.describeObject" 
+:4473812:12484277:325131856:415:".C" "nnet.default" "nnet.formula" "nnet" 
+:4473812:12484277:325131856:0:".C" "nnet.default" "nnet.formula" "nnet" 
+:4473812:12484277:325131856:0:".C" "nnet.default" "nnet.formula" "nnet" 
+:4473812:12484277:325131856:0:".C" "nnet.default" "nnet.formula" "nnet" 
+:4504908:12546196:329812336:1805:"str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "...elt" "withVisible" "capture.output" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.withTimeLimit" ".rs.valueFromStr" ".rs.valueContentsImpl" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.valueContents" ".rs.describeObject" 

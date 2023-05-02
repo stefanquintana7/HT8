@@ -12,6 +12,7 @@ library(nnet)
 library(dummy)
 library(neuralnet)
 library(Metrics)
+library(gbm)
 
 porcentaje<-0.7
 datos <- read.csv("train.csv")
@@ -112,11 +113,50 @@ accuracy(test3$prediccion2, test$clasificacion)
 De igual manera se obtienen exactamente los mismos resultados para el modelo 2 propuesto, lo cual nos indica que de todas maneras existe sobreajuste del modelo. Descartamos la posibilidad que esto sea debido a correlación entre variables ya que se ha analizado con anterioridad la correlacion entre todas las variables a utilizar. Esto puede suceder debido a que se esta tomando muy pocas variables en el modelo o estamos tomando algunas variables que no tienen representación y su significancia en el modelo altera la predicción.
 
 ##Pregunta 8: Tuneo de parametros
-```{r}
 
+
+```{r}
+train$Neighborhood <- as.factor(train$Neighborhood)
+boosting_model <-gbm(clasificacion~.,
+                     data=train,
+                     n.trees = 500,
+                     interaction.depth = 1,
+                     shrinkage=0.1)
+modelLookup("gbm")
+set.seed(123)
+auto_tune_boost <- train(clasificacion~.,
+                     data=train,
+                     method= "gbm",
+                     metric = "Accuracy")
 ```
 
-##Pregunta 9 y 10: Modelos de regresión con la variable SalePrice
+
+Evualuar nuestro modelo tuneado en el conjunto test
+
+```{r}
+auto_tune_predict <- predict(auto_tune_boost,
+                             newdata = test)
+auto_tune_predict
+mean(auto_tune_predict==test$clasificacion)
+```
+El modelo tuneado tuvo una precision del 100% en el conjunto test.    
+
+
+```{r}
+library(tibble)
+library(kableExtra)
+tibble("Modelo" = c("Modelo 1 RNA parametros arbitrarios", "Modelo Tuneado con caret"),
+       "Presicion"=c(0.52,1)) %>%
+kable(caption = "Presiciones en el conjunto test",
+      align = "lc")%>%
+  kable_styling(bootstrap_options = "striped")%>%
+  column_spec(1,bold = TRUE, color = "green")%>%
+  column_spec(2,bold = TRUE, color = "royalblue")
+```
+
+
+
+## Pregunta 9 y 10: Modelos de regresión con la variable SalePrice
 ```{r, echo=FALSE}
 #Modelo 1
 Rprof(memory.profiling = TRUE)
