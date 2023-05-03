@@ -13,6 +13,8 @@ library(dummy)
 library(neuralnet)
 library(Metrics)
 library(gbm)
+library(dplyr)
+
 
 porcentaje<-0.7
 datos <- read.csv("train.csv")
@@ -39,13 +41,10 @@ test<-datos[-corte,]
 
 ```{r, echo=FALSE}
 Rprof(memory.profiling = TRUE)
-```
-
-
-```{r, echo=FALSE}
 modelo.nn1 <- nnet(clasificacion~.,data = train, size=4, rang=0.1, decay=5e-4, maxit=200) 
 Rprof(NULL)
-l1<-summaryRprof(memory = "both")
+l1<-summaryRprof
+
 prediccion1 <- as.data.frame(predict(modelo.nn1, newdata = test[,1:9]))
 columnaMasAlta<-apply(prediccion1, 1, function(x) colnames(prediccion1)[which.max(x)])
 test$prediccion1<-columnaMasAlta
