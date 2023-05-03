@@ -38,12 +38,14 @@ test<-datos[-corte,]
 #Pregunta 3 y 4: Hacer dos redes neuronales diferentes y predicciones
 
 ```{r, echo=FALSE}
-#Modelo 47
 Rprof(memory.profiling = TRUE)
-modelo.nn1 <- nnet(clasificacion~.,data = train, size=2, rang=0.1, decay=5e-4, maxit=200) 
+```
+
+
+```{r, echo=FALSE}
+modelo.nn1 <- nnet(clasificacion~.,data = train, size=4, rang=0.1, decay=5e-4, maxit=200) 
 Rprof(NULL)
 l1<-summaryRprof(memory = "both")
-
 prediccion1 <- as.data.frame(predict(modelo.nn1, newdata = test[,1:9]))
 columnaMasAlta<-apply(prediccion1, 1, function(x) colnames(prediccion1)[which.max(x)])
 test$prediccion1<-columnaMasAlta
@@ -56,7 +58,7 @@ test$prediccion1<-NULL
 
 #Modelo 2
 Rprof(memory.profiling = TRUE)
-modelo.nn2 <- nnet(clasificacion~.,data = train, size=20, rang=0.5, decay=2e-4, maxit=10) 
+modelo.nn2 <- nnet(clasificacion~.,data = train, size=8, rang=0.1, decay=2e-4, maxit=100) 
 Rprof(NULL)
 l2<-summaryRprof(memory = "both")
 
@@ -115,11 +117,11 @@ De igual manera se obtienen exactamente los mismos resultados para el modelo 2 p
 ##Pregunta 8: Tuneo de parametros
 
 
-```{r}
+```{r, echo=FALSE}
 train$Neighborhood <- as.factor(train$Neighborhood)
 boosting_model <-gbm(clasificacion~.,
                      data=train,
-                     n.trees = 500,
+                     n.trees = 50,
                      interaction.depth = 1,
                      shrinkage=0.1)
 modelLookup("gbm")
@@ -133,20 +135,21 @@ auto_tune_boost <- train(clasificacion~.,
 
 Evualuar nuestro modelo tuneado en el conjunto test
 
-```{r}
+```{r,echo=FALSE}
 auto_tune_predict <- predict(auto_tune_boost,
                              newdata = test)
-auto_tune_predict
-mean(auto_tune_predict==test$clasificacion)
 ```
-El modelo tuneado tuvo una precision del 100% en el conjunto test.    
+El modelo tuneado tuvo una precision del 100% en el conjunto test. Esto nos deja mucho mas claro la existencia de overfitting para el modelo.
 
 
 ```{r}
+#auto_tune_predict
+mean(auto_tune_predict==test2$prediccion1)
+mean(auto_tune_predict==test3$prediccion2)
 library(tibble)
 library(kableExtra)
-tibble("Modelo" = c("Modelo 1 RNA parametros arbitrarios", "Modelo Tuneado con caret"),
-       "Presicion"=c(0.52,1)) %>%
+tibble("Modelo" = c("Modelo 1 RNA parametros arbitrarios", "Modelo 2 RNA parametros arbitrarios", "Modelo Tuneado con caret"),
+       "Presicion"=c(0.52,1,1)) %>%
 kable(caption = "Presiciones en el conjunto test",
       align = "lc")%>%
   kable_styling(bootstrap_options = "striped")%>%
@@ -160,6 +163,10 @@ kable(caption = "Presiciones en el conjunto test",
 ```{r, echo=FALSE}
 #Modelo 1
 Rprof(memory.profiling = TRUE)
+```
+
+
+```{r, echo=FALSE}
 modelo.nn3 <- nnet(SalePrice~.,data = train, size=2, rang=0.1, decay=5e-4, maxit=200) 
 Rprof(NULL)
 l3<-summaryRprof(memory = "both")
@@ -171,6 +178,7 @@ mean((test$prediccion3 - test$SalePrice))
 plot(test$SalePrice, test$prediccion3,
      main="Neural network predictions vs actual",
      xlab="Actual")
+test4<-test
 test$prediccion3<-NULL
 
 ```
@@ -178,6 +186,10 @@ test$prediccion3<-NULL
 ```{r, echo=FALSE}
 #Modelo 2
 Rprof(memory.profiling = TRUE)
+```
+
+
+```{r, echo=FALSE}
 modelo.nn4 <- nnet(SalePrice~.,data = train, size=20, rang=0.5, decay=2e-4, maxit=10) 
 Rprof(NULL)
 l4<-summaryRprof(memory = "both")
@@ -189,8 +201,8 @@ mean((test$prediccion4 - test$SalePrice))
 plot(test$SalePrice, test$prediccion3,
      main="Neural network predictions vs actual",
      xlab="Actual")
-
-test$prediccion4<-NULL
+test5<-test
+#test$prediccion4
 
 ```
 
@@ -208,12 +220,32 @@ rmse(is.numeric(test$SalePrice), is.numeric(prediccion4))
 
 ```
 
-##Pregunta 13: Tuneo de parametros en los modelos de regresión
-```{r}
+## Pregunta 13: Tuneo de parametros en los modelos de regresión
 
+```{r,echo=FALSE}
+auto_tune_predict <- predict(auto_tune_boost,
+                             newdata = test)
+```
+El modelo tuneado tuvo una precision del 0% en el conjunto test. Realmente los resultados obtenidos con el modelo de regresion dejan bastante a desear ya que no tienen sentido esos resultados, por lo que la comparacion entre los resultados obtenidos con el tuneo de parametros era de esperarse diferente respecto al resultado obtenido por los modelos de regresion.   
+
+
+```{r}
+#auto_tune_predict
+accuracy(test4$prediccion3, test$SalePrice)
+mean(auto_tune_predict==test4$prediccion3)
+mean(auto_tune_predict==test5$prediccion4)
+library(tibble)
+library(kableExtra)
+tibble("Modelo" = c("Modelo de regresion 1 parametros arbitrarios", "Modelo de regresion 1 parametros arbitrarios","Modelo Tuneado con caret"),
+       "Presicion"=c(0.52,0,0)) %>%
+kable(caption = "Presiciones en el conjunto test",
+      align = "lc")%>%
+  kable_styling(bootstrap_options = "striped")%>%
+  column_spec(1,bold = TRUE, color = "green")%>%
+  column_spec(2,bold = TRUE, color = "royalblue")
 ```
 
-##Pregunta 14: Comparación de tiempo y predicción
+## Pregunta 14: Comparación de tiempo y predicción
 
 ```{r, echo=FALSE}
 #modelo 1
@@ -226,13 +258,13 @@ l4$sampling.time
 ```
 De acuerdo con las gráficas de residuos, que nos indican que ambos modelos tienen una distribución normal, la diferencia entre los R2 y el tiempo de entrenamiento no se logra determinar una diferencia significativa entre la calidad de ambos modelos. Por lo tanto, se recomienda explorar distintas topologías y otros solvers para determinar el modelo de regresión óptimo.
 
-##Pregunta 15: Mejor modelo para clasificar (comparación con otras hojas)
+## Pregunta 15: Mejor modelo para clasificar (comparación con otras hojas)
 
 Al observar los resultados se puede observar que otros modelos obtuvieron mejores resultados. Esto puede ser debido a que la cantidad de variables y neuronas que utilizamos para este modelo. En cuanto tiempo de ejecución se puede notar una gran diferencia entre los resultados y gran salto a comparación de de los otros algoritmos. Esto pudo haber sido por la cantidad de neuronas ya que cada una necesita obtener resultados de las capas.
 
 
-##Pregunta 16: Mejor modelo para predecir (comparación con otras hojas)
+## Pregunta 16: Mejor modelo para predecir (comparación con otras hojas)
 
 A comparación de otros modelos este tiene un tiempo de predicción bastante bajo, ninguno sobrepasa los 0.05 lo cuál es positivo y da una ventaja frente a los otros algoritmos.
 
-##Pregunta 17: Conclusión general 
+## Pregunta 17: Conclusión general 
