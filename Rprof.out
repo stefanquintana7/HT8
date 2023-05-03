@@ -1,4 +1,2 @@
 memory profiling: sample.interval=20000
-:3367088:10524895:179058880:415:".C" "nnet.default" "nnet.formula" "nnet" 
-:3384752:10583680:181763512:1034:"str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "<Anonymous>" "do.call" "strSub" "str.default" "str" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "...elt" "withVisible" "capture.output" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.withTimeLimit" ".rs.valueFromStr" ".rs.valueContentsImpl" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" ".rs.valueContents" ".rs.describeObject" 
-:3408881:10588970:185407264:1411:
+:2499238:5751368:178136560:160:".External" "dev.off" "eng_r" "block_exec" "call_block" "process_group.block" "process_group" "withCallingHandlers" "process_file" "knitr::knit" "rmarkdown::render" 
